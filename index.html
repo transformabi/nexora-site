@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXORA: Gestão de pessoas com dados de verdade</title>
+<meta name="description" content="NEXORA junta RH, DP e indicadores em um único lugar. Plataforma de gestão de pessoas para empresas brasileiras, da Transforma BI.">
+<meta name="theme-color" content="#070D16">
+
+<meta property="og:title" content="NEXORA: Gestão de pessoas com dados de verdade">
+<meta property="og:description" content="RH, DP e indicadores, juntos, sem retrabalho. Conheça o NEXORA, da Transforma BI.">
+<!-- DEPLOY STEP: trocar pelo domínio real antes de publicar -->
+<meta property="og:image" content="https://SEU-DOMINIO-AQUI/assets/hero-ending.jpg">
+<meta property="og:url" content="https://SEU-DOMINIO-AQUI/">
+<meta property="og:type" content="website">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,6 91,28 91,72 50,94 9,72 9,28' fill='%230C447C'/%3E%3Ccircle cx='50' cy='50' r='16' fill='%231D9E75'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:clip}
+html{overflow-x:hidden}
+
+:root{
+  --canvas:#070D16;
+  --panel:#0F1E2E;
+  --panel-border:rgba(255,255,255,.09);
+  --accent:#1D9E75;
+  --accent-hover:#17835F;
+  --accent-muted:rgba(29,158,117,.14);
+  --brand-blue:#4F94D4;
+  --text-primary:#EAF2F8;
+  --text-secondary:rgba(234,242,248,.7);
+  --text-muted:rgba(234,242,248,.48);
+  --text-danger:#F0A5A0;
+  --font-display:'Space Grotesk',sans-serif;
+  --font-body:'Inter',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  --radius:14px;
+  --tshadow:0 1px 2px rgba(3,6,10,.95),0 3px 12px rgba(3,6,10,.78),0 10px 44px rgba(3,6,10,.8);
+}
+
+body{
+  background:var(--canvas);
+  color:var(--text-primary);
+  font-family:var(--font-body);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+.skip-link{
+  position:absolute;top:-60px;left:16px;z-index:1000;
+  background:var(--accent);color:#03150F;padding:10px 18px;border-radius:8px;
+  font-weight:600;transition:top .2s var(--ease-out);
+}
+.skip-link:focus{top:16px}
+
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+
+h1,h2,h3{font-family:var(--font-display);font-weight:700;letter-spacing:-.01em;line-height:1.12}
+.eyebrow{
+  font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent);font-weight:500;
+}
+
+.container{max-width:1080px;margin:0 auto;padding:0 24px}
+
+/* ---------- ambient background layer (whole-site environment) ---------- */
+.ambient{
+  position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 40% at 15% 0%,rgba(79,148,212,.10) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 35% at 100% 30%,rgba(29,158,117,.08) 0%,transparent 60%),
+    var(--canvas);
+}
+.ambient::before{
+  content:"";position:absolute;inset:0;opacity:.5;
+  background-image:radial-gradient(rgba(255,255,255,.55) 1px,transparent 1px);
+  background-size:180px 180px;
+  animation:drift 70s linear infinite;
+}
+@keyframes drift{from{background-position:0 0}to{background-position:-360px 540px}}
+
+/* ================= HERO ================= */
+.hero-pin{position:relative;height:450vh}
+.hero-stage{
+  position:sticky;top:0;height:100vh;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  background:#040910;
+}
+.hero-media{position:absolute;inset:0;overflow:hidden}
+.hero-media video,.hero-media .poster{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+}
+.hero-media .poster{background-size:cover;background-position:center;opacity:1;transition:opacity .5s var(--ease-out)}
+.hero-media video{opacity:0;transition:opacity .6s var(--ease-out);will-change:transform;transform:translateZ(0)}
+.hero-stage.video-ready .hero-media video{opacity:1}
+.hero-stage.video-ready .hero-media .poster{opacity:0}
+.hero-stage video[aria-hidden]{pointer-events:none}
+
+.hero-scrim{
+  position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 120% 90% at 50% 45%,rgba(4,8,14,0) 30%,rgba(4,8,14,.68) 100%);
+}
+
+.hero-bands{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.band{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;opacity:0;padding:0 24px;
+}
+.band::before{
+  content:"";position:absolute;inset:-4%;pointer-events:none;
+  opacity:calc(.25 + .75*var(--k,1));
+  background:radial-gradient(ellipse 74% 62% at 50% 50%,rgba(3,6,10,.68) 0%,rgba(3,6,10,.46) 46%,rgba(3,6,10,0) 76%);
+}
+.band-inner{position:relative;max-width:720px;text-shadow:var(--tshadow)}
+.band .eyebrow{display:block;margin-bottom:14px;text-shadow:var(--tshadow)}
+.band h2{font-size:clamp(28px,5vw,52px);color:var(--text-primary)}
+.band p{font-size:clamp(15px,2vw,19px);color:var(--text-secondary);margin-top:16px;max-width:52ch;margin-left:auto;margin-right:auto}
+
+.split-word{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.15em;margin-bottom:-.15em}
+.split-char{
+  display:inline-block;
+  --kc:clamp(0,(var(--k,0) - var(--th,0))*2.6,1);
+  opacity:var(--kc);
+  transform:translateY(calc((1 - var(--kc))*22px));
+}
+
+.hero-cta{margin-top:30px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  font-family:var(--font-body);font-weight:600;font-size:15px;
+  padding:14px 26px;border-radius:10px;border:1px solid transparent;cursor:pointer;
+  transition:transform .2s var(--ease-out),background .2s var(--ease-out),border-color .2s var(--ease-out);
+  text-decoration:none;
+}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--accent);color:#03150F;text-shadow:none}
+.btn-primary:hover{background:var(--accent-hover)}
+.btn-ghost{background:rgba(255,255,255,.04);color:var(--text-primary);border-color:rgba(255,255,255,.18);text-shadow:none}
+.btn-ghost:hover{border-color:rgba(255,255,255,.4)}
+@media (pointer:coarse){.btn{min-height:44px}}
+
+.scroll-cue{
+  position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--text-muted);
+  font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  opacity:1;transition:opacity .4s;
+}
+.scroll-cue svg{animation:cuebob 1.8s ease-in-out infinite}
+@keyframes cuebob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+.hero-stage.scrolled .scroll-cue{opacity:0}
+
+/* loading ring (kept in the markup for parity; small clip so it should resolve almost instantly) */
+.load-ring{position:absolute;width:48px;height:48px;color:var(--text-secondary);opacity:.85}
+.hero-stage.video-ready .load-ring,.hero-stage.video-failed .load-ring{display:none}
+
+/* static hero (phones / reduced motion) */
+.static-hero{
+  position:absolute;inset:0;background-size:cover;background-position:center;
+  display:none;align-items:flex-end;justify-content:center;padding:64px 24px;
+}
+.static-hero .hero-scrim{background:linear-gradient(to top,rgba(3,6,10,.86) 0%,rgba(3,6,10,.35) 55%,rgba(3,6,10,.15) 100%)}
+.static-hero-inner{position:relative;text-align:center;max-width:560px;text-shadow:var(--tshadow)}
+.static-hero-inner h1{font-size:clamp(30px,7vw,44px);margin-bottom:14px}
+.static-hero-inner p{color:var(--text-secondary);font-size:16px;margin-bottom:26px}
+
+@media (max-width:720px),
+       (orientation:portrait) and (max-width:1024px),
+       (orientation:portrait) and (pointer:coarse),
+       (orientation:landscape) and (pointer:coarse) and (max-height:560px),
+       (prefers-reduced-motion:reduce){
+  .hero-pin{height:100vh}
+  .hero-media,.hero-bands,.load-ring,.scroll-cue{display:none}
+  .static-hero{display:flex}
+}
+@media (max-height:560px){.scroll-cue{display:none}}
+
+/* ================= SECTIONS ================= */
+main{position:relative;z-index:1}
+section{padding:100px 0}
+.section-head{max-width:640px;margin:0 0 48px}
+.section-head h2{font-size:clamp(26px,4vw,38px);margin-top:12px}
+.section-head p{color:var(--text-secondary);margin-top:14px;font-size:17px}
+
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s var(--ease-out),transform .6s var(--ease-out)}
+.reveal.in{opacity:1;transform:none}
+.stagger.in .r-item{transition-delay:calc(var(--i,0) * 90ms)}
+
+/* --- pains --- */
+.pain-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.pain-card{
+  background:var(--panel);border:1px solid var(--panel-border);border-radius:var(--radius);
+  padding:26px;font-size:17px;color:var(--text-primary);position:relative;overflow:hidden;
+}
+.pain-card::before{content:"";position:absolute;top:0;left:0;width:3px;height:100%;background:var(--brand-blue);opacity:.6}
+
+/* --- how it works --- */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.step{background:var(--panel);border:1px solid var(--panel-border);border-radius:var(--radius);padding:26px;display:flex;flex-direction:column;gap:16px}
+.step-num{font-family:var(--font-mono);color:var(--accent);font-size:13px}
+.step h3{font-size:19px;font-family:var(--font-body);font-weight:700}
+.step p{color:var(--text-secondary);font-size:15px}
+
+.mock{
+  border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.08);
+  background:#0B1622;padding:14px;font-family:var(--font-body);
+}
+.mock-bar{display:flex;gap:6px;margin-bottom:12px}
+.mock-bar span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15)}
+.mock-row{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text-muted);padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.mock-row:last-child{border:none}
+.mock-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.mock-bar-track{flex:1;height:5px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden}
+.mock-bar-fill{height:100%;background:var(--accent);border-radius:3px}
+.mock-chip{font-size:9px;padding:2px 7px;border-radius:4px;background:rgba(29,158,117,.16);color:#7CDBB5;font-weight:600}
+
+/* --- interactive hold moment --- */
+.hold-wrap{
+  background:var(--panel);border:1px solid var(--panel-border);border-radius:var(--radius);
+  padding:48px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:22px;
+}
+.hexfield{position:relative;width:220px;height:160px}
+.hexfield .hx{
+  position:absolute;top:50%;left:50%;width:34px;height:30px;
+  background:var(--brand-blue);opacity:.85;
+  clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);
+  transform:translate(-50%,-50%)
+    translate(calc(var(--sx) * (1 - var(--p,0))),calc(var(--sy) * (1 - var(--p,0))))
+    rotate(calc(var(--sr) * (1 - var(--p,0))));
+  transition:background .3s;
+}
+.hexfield .hx.core{background:var(--accent)}
+.hold-btn{
+  position:relative;width:230px;height:52px;border-radius:26px;border:1px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.04);color:var(--text-primary);font-family:var(--font-body);font-weight:600;font-size:14px;
+  cursor:pointer;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:none;
+}
+.hold-fill{position:absolute;inset:0;background:var(--accent-muted);width:calc(var(--p,0) * 100%);pointer-events:none}
+.hold-btn span{position:relative}
+.hold-hint{font-size:13px;color:var(--text-muted)}
+.hold-results{display:flex;gap:36px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+.hold-results div{display:flex;flex-direction:column;align-items:center;gap:4px}
+.hold-results strong{font-family:var(--font-display);font-size:30px;color:var(--accent)}
+.hold-results span{font-size:12px;color:var(--text-muted)}
+.hold-results[hidden]{display:none}
+
+/* --- modules / tiers --- */
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.tier{background:var(--panel);border:1px solid var(--panel-border);border-radius:var(--radius);padding:28px;display:flex;flex-direction:column;gap:14px}
+.tier-badge{align-self:flex-start;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;font-family:var(--font-mono);letter-spacing:.04em}
+.tier.starter{border-color:rgba(29,158,117,.35)}
+.tier.starter .tier-badge{background:rgba(29,158,117,.16);color:#5FD3A5}
+.tier.pro{border-color:rgba(192,152,48,.4)}
+.tier.pro .tier-badge{background:rgba(192,152,48,.18);color:#E8C878}
+.tier.enterprise{border-color:rgba(74,8,174,.45)}
+.tier.enterprise .tier-badge{background:rgba(124,80,220,.2);color:#C6AEF5}
+.tier h3{font-size:22px;font-family:var(--font-display)}
+.tier p{color:var(--text-secondary);font-size:14px}
+.tier .btn{margin-top:auto;width:100%}
+
+/* --- faq --- */
+.faq-item{border-bottom:1px solid var(--panel-border)}
+.faq-q{
+  width:100%;text-align:left;background:none;border:none;color:var(--text-primary);
+  font-family:var(--font-body);font-weight:600;font-size:17px;padding:22px 0;
+  display:flex;justify-content:space-between;align-items:center;gap:16px;cursor:pointer;
+}
+.faq-q svg{flex-shrink:0;transition:transform .3s var(--ease-out);color:var(--accent)}
+.faq-item[data-open="true"] .faq-q svg{transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s var(--ease-out)}
+.faq-a p{color:var(--text-secondary);padding-bottom:22px;font-size:15px;max-width:70ch}
+
+/* --- contact --- */
+.contact-wrap{background:var(--panel);border:1px solid var(--panel-border);border-radius:var(--radius);padding:44px;display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.contact-form{display:flex;flex-direction:column;gap:16px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:13px;color:var(--text-secondary);font-weight:500}
+.field input,.field textarea{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.16);border-radius:8px;
+  padding:12px 14px;color:var(--text-primary);font-family:var(--font-body);font-size:15px;
+}
+.field input:focus,.field textarea:focus{border-color:var(--accent);outline:none}
+.field textarea{resize:vertical;min-height:100px}
+.field-error{font-size:12px;color:var(--text-danger);display:none}
+.field.invalid input,.field.invalid textarea{border-color:var(--text-danger)}
+.field.invalid .field-error{display:block}
+.form-success{display:none;flex-direction:column;gap:12px;align-items:flex-start}
+.form-success.show{display:flex}
+.contact-form.hide{display:none}
+.contact-side h3{font-size:20px;margin-bottom:12px}
+.contact-side p{color:var(--text-secondary);font-size:15px;margin-bottom:10px}
+
+footer{border-top:1px solid var(--panel-border);padding:40px 0;margin-top:40px}
+.footer-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.footer-brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:700}
+.footer-brand svg{width:28px;height:28px}
+footer nav{display:flex;gap:22px;flex-wrap:wrap}
+footer nav a{color:var(--text-secondary);font-size:14px;text-decoration:none}
+footer nav a:hover{color:var(--text-primary)}
+.footer-copy{color:var(--text-muted);font-size:13px;margin-top:24px}
+
+.divider{display:block;width:100%;height:40px;margin:0 auto}
+
+@media (max-width:860px){
+  .pain-grid,.steps,.tiers{grid-template-columns:1fr}
+  .contact-wrap{grid-template-columns:1fr}
+  section{padding:72px 0}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  .ambient::before{animation:none}
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Pular para o conteúdo</a>
+<div class="ambient" aria-hidden="true"></div>
+
+<header class="sr-only">
+  <p>NEXORA, por Transforma BI.</p>
+</header>
+
+<!-- ================= HERO ================= -->
+<div class="hero-pin" id="heroPin">
+  <div class="hero-stage" id="heroStage">
+
+    <div class="hero-media" id="heroMedia">
+      <div class="poster" id="heroPoster" style="background-image:url('assets/hero-poster.jpg')"></div>
+      <video id="heroVideo" muted playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
+    </div>
+    <div class="hero-scrim" aria-hidden="true"></div>
+
+    <svg class="load-ring" id="loadRing" viewBox="0 0 48 48" aria-hidden="true">
+      <circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="3" opacity=".25"/>
+      <circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="3"
+        stroke-dasharray="126" style="stroke-dashoffset:var(--ld,126)" stroke-linecap="round"/>
+    </svg>
+
+    <div class="hero-bands" id="heroBands">
+      <div class="band" id="band1" data-range="0.05,0.32">
+        <div class="band-inner">
+          <span class="eyebrow">Gestão de pessoas, hoje</span>
+          <h2 data-split>Cada planilha. Uma versão diferente da verdade.</h2>
+        </div>
+      </div>
+      <div class="band" id="band2" data-range="0.36,0.64">
+        <div class="band-inner">
+          <span class="eyebrow">Tudo no mesmo lugar</span>
+          <h2 data-split>RH, DP e indicadores, juntos. Sem copiar dado de um sistema pro outro.</h2>
+        </div>
+      </div>
+      <div class="band" id="band3" data-range="0.68,0.97">
+        <div class="band-inner">
+          <h2 data-split>Uma fonte só. Decisões mais rápidas.</h2>
+          <p>Para empresas brasileiras que cuidam de pessoas de verdade, não de planilhas.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="#contato">Solicitar demonstração</a>
+            <a class="btn btn-ghost" href="#como-funciona">Ver como funciona</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-cue" id="scrollCue" aria-hidden="true">
+      <span>Role para continuar</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 4v16m0 0l-6-6m6 6l6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+
+    <div class="static-hero" id="staticHero" style="background-image:url('assets/hero-ending.jpg')">
+      <div class="hero-scrim" aria-hidden="true"></div>
+      <div class="static-hero-inner">
+        <h1>Uma fonte só. Decisões mais rápidas.</h1>
+        <p>NEXORA junta RH, DP e indicadores em um único lugar, para empresas brasileiras que cuidam de pessoas de verdade.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#contato">Solicitar demonstração</a>
+          <a class="btn btn-ghost" href="#como-funciona">Ver como funciona</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<main id="main" tabindex="-1">
+
+  <!-- ================= PAINS ================= -->
+  <section aria-labelledby="pains-h">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">O que você já cansou de viver</span>
+        <h2 id="pains-h">O RH pequeno carrega um peso que não devia.</h2>
+      </div>
+      <div class="pain-grid stagger reveal">
+        <div class="pain-card r-item" style="--i:0">Uma planilha por departamento. Nenhuma bate com a outra.</div>
+        <div class="pain-card r-item" style="--i:1">Fechar a folha vira um evento. Toda competência.</div>
+        <div class="pain-card r-item" style="--i:2">RH, financeiro e operação decidem com números diferentes.</div>
+        <div class="pain-card r-item" style="--i:3">O dono da empresa ainda cuida do RH sozinho, nas horas vagas.</div>
+      </div>
+    </div>
+  </section>
+
+  <svg class="divider" viewBox="0 0 200 40" aria-hidden="true"><polyline class="draw-line" points="10,20 60,20 75,5 125,35 140,20 190,20" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity=".5"/></svg>
+
+  <!-- ================= HOW IT WORKS ================= -->
+  <section id="como-funciona" aria-labelledby="how-h">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Como funciona</span>
+        <h2 id="how-h">Do dado espalhado ao indicador pronto, em três passos.</h2>
+      </div>
+      <div class="steps stagger reveal">
+        <div class="step r-item" style="--i:0">
+          <span class="step-num">01</span>
+          <h3>Cadastre do seu jeito</h3>
+          <p>Manual, por planilha ou pela API. O dado entra de onde ele já está.</p>
+          <div class="mock" aria-hidden="true">
+            <div class="mock-bar"><span></span><span></span><span></span></div>
+            <div class="mock-row"><span class="mock-dot" style="background:#5FD3A5"></span>Entrada Manual<span class="mock-chip" style="margin-left:auto">ativo</span></div>
+            <div class="mock-row"><span class="mock-dot" style="background:#4F94D4"></span>Importar CSV / XLSX</div>
+            <div class="mock-row"><span class="mock-dot" style="background:#E8C878"></span>API por sistema</div>
+          </div>
+        </div>
+        <div class="step r-item" style="--i:1">
+          <span class="step-num">02</span>
+          <h3>Escolha o que importa</h3>
+          <p>Sua empresa decide quais campos usar: CPF, CBO, CNH, o que fizer sentido pro seu RH.</p>
+          <div class="mock" aria-hidden="true">
+            <div class="mock-bar"><span></span><span></span><span></span></div>
+            <div class="mock-row">CPF<span class="mock-chip" style="margin-left:auto">obrigatório</span></div>
+            <div class="mock-row">CNH<span class="mock-chip" style="margin-left:auto">ativo</span></div>
+            <div class="mock-row" style="opacity:.4">Cesta básica<span style="margin-left:auto;font-size:9px">inativo</span></div>
+          </div>
+        </div>
+        <div class="step r-item" style="--i:2">
+          <span class="step-num">03</span>
+          <h3>Veja o indicador pronto</h3>
+          <p>Headcount, turnover, absenteísmo e mais de vinte KPIs, calculados sozinhos.</p>
+          <div class="mock" aria-hidden="true">
+            <div class="mock-row">Headcount<div class="mock-bar-track" style="margin-left:8px"><div class="mock-bar-fill" style="width:82%"></div></div></div>
+            <div class="mock-row">Retenção<div class="mock-bar-track" style="margin-left:8px"><div class="mock-bar-fill" style="width:94%"></div></div></div>
+            <div class="mock-row">Turnover<div class="mock-bar-track" style="margin-left:8px"><div class="mock-bar-fill" style="width:12%;background:#E8C878"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= INTERACTIVE MOMENT ================= -->
+  <section aria-labelledby="hold-h">
+    <div class="container">
+      <div class="section-head reveal" style="margin-left:auto;margin-right:auto;text-align:center">
+        <span class="eyebrow">Veja com as mãos</span>
+        <h2 id="hold-h">É isso que o NEXORA faz com seus dados.</h2>
+      </div>
+      <div class="hold-wrap reveal">
+        <div class="hexfield" id="hexField" aria-hidden="true">
+          <div class="hx" style="--sx:-70px;--sy:-40px;--sr:40deg"></div>
+          <div class="hx" style="--sx:60px;--sy:-55px;--sr:-30deg"></div>
+          <div class="hx" style="--sx:-85px;--sy:30px;--sr:-50deg"></div>
+          <div class="hx" style="--sx:75px;--sy:45px;--sr:60deg"></div>
+          <div class="hx" style="--sx:-20px;--sy:-70px;--sr:20deg"></div>
+          <div class="hx" style="--sx:25px;--sy:65px;--sr:-20deg"></div>
+          <div class="hx core" style="--sx:0px;--sy:0px;--sr:0deg"></div>
+        </div>
+        <button class="hold-btn" id="holdBtn" aria-describedby="holdHint">
+          <span class="hold-fill" id="holdFill" aria-hidden="true"></span>
+          <span id="holdBtnLabel">Segure para juntar os dados</span>
+        </button>
+        <p class="hold-hint" id="holdHint">Segure o botão até o brilho completar.</p>
+        <div class="hold-results" id="holdResults" hidden aria-live="polite">
+          <div><strong data-target="500">0</strong><span>colaboradores geridos</span></div>
+          <div><strong data-target="6">0</strong><span>módulos</span></div>
+          <div><strong data-target="20">0</strong><span>indicadores prontos</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <svg class="divider" viewBox="0 0 200 40" aria-hidden="true"><polyline points="10,20 60,20 75,5 125,35 140,20 190,20" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity=".5"/></svg>
+
+  <!-- ================= TIERS ================= -->
+  <section id="modulos" aria-labelledby="tiers-h">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Do básico ao completo</span>
+        <h2 id="tiers-h">Cresça de módulo em módulo, no seu tempo.</h2>
+      </div>
+      <div class="tiers stagger reveal">
+        <div class="tier starter r-item" style="--i:0">
+          <span class="tier-badge">Starter</span>
+          <h3>Starter</h3>
+          <p>Para pequenas empresas. 1 módulo, até 5 usuários.</p>
+          <a class="btn btn-ghost" href="#contato">Solicitar demonstração</a>
+        </div>
+        <div class="tier pro r-item" style="--i:1">
+          <span class="tier-badge">Pro</span>
+          <h3>Pro</h3>
+          <p>Múltiplos módulos, até 20 usuários.</p>
+          <a class="btn btn-ghost" href="#contato">Solicitar demonstração</a>
+        </div>
+        <div class="tier enterprise r-item" style="--i:2">
+          <span class="tier-badge">Enterprise</span>
+          <h3>Enterprise</h3>
+          <p>Todos os módulos, usuários ilimitados.</p>
+          <a class="btn btn-ghost" href="#contato">Solicitar demonstração</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FAQ ================= -->
+  <section aria-labelledby="faq-h">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Perguntas frequentes</span>
+        <h2 id="faq-h">O que a gente mais escuta antes de fechar.</h2>
+      </div>
+      <div class="faq-list reveal">
+        <div class="faq-item" data-open="false">
+          <button class="faq-q" aria-expanded="false">Meus dados ficam seguros?
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+          <div class="faq-a"><p>Sim. Cada empresa tem os dados isolados dos outros clientes, com controle de acesso por linha no banco (Row Level Security).</p></div>
+        </div>
+        <div class="faq-item" data-open="false">
+          <button class="faq-q" aria-expanded="false">Preciso migrar tudo de uma vez?
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+          <div class="faq-a"><p>Não. Dá para importar sua planilha atual e completar o cadastro aos poucos, sem parar a operação.</p></div>
+        </div>
+        <div class="faq-item" data-open="false">
+          <button class="faq-q" aria-expanded="false">Funciona pra empresa sem RH dedicado?
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+          <div class="faq-a"><p>Funciona especialmente pra isso. Muitas empresas que usam o NEXORA têm o próprio dono cuidando do RH.</p></div>
+        </div>
+        <div class="faq-item" data-open="false">
+          <button class="faq-q" aria-expanded="false">Quanto custa?
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+          <div class="faq-a"><p>Depende do módulo e do número de usuários. Preencha o formulário abaixo que a gente monta uma proposta.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CONTACT ================= -->
+  <section id="contato" aria-labelledby="contact-h">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Vamos conversar</span>
+        <h2 id="contact-h">Peça uma demonstração sem compromisso.</h2>
+      </div>
+      <div class="contact-wrap reveal">
+        <form class="contact-form" id="contactForm" novalidate>
+          <div class="field" data-field="nome">
+            <label for="f-nome">Nome</label>
+            <input type="text" id="f-nome" name="nome" placeholder="Seu nome completo" required>
+            <span class="field-error">Digite seu nome.</span>
+          </div>
+          <div class="field" data-field="email">
+            <label for="f-email">E-mail</label>
+            <input type="email" id="f-email" name="email" placeholder="voce@empresa.com.br" required>
+            <span class="field-error">Digite um e-mail válido.</span>
+          </div>
+          <div class="field" data-field="empresa">
+            <label for="f-empresa">Empresa</label>
+            <input type="text" id="f-empresa" name="empresa" placeholder="Nome da sua empresa" required>
+            <span class="field-error">Digite o nome da empresa.</span>
+          </div>
+          <div class="field" data-field="mensagem">
+            <label for="f-mensagem">Mensagem</label>
+            <textarea id="f-mensagem" name="mensagem" placeholder="Conte um pouco sobre o que você precisa"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Enviar pedido</button>
+        </form>
+        <div class="form-success" id="formSuccess">
+          <h3>Prontinho.</h3>
+          <p>Abrimos seu e-mail com a mensagem já pronta. É só revisar e clicar em enviar.</p>
+          <button class="btn btn-ghost" id="formReset" type="button">Enviar outra mensagem</button>
+        </div>
+        <div class="contact-side">
+          <h3>Ou fale direto</h3>
+          <p>E-mail: <a href="mailto:transformabirj@gmail.com" style="color:var(--accent)">transformabirj@gmail.com</a></p>
+          <p>Resposta em até um dia útil.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-row">
+      <div class="footer-brand">
+        <svg viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,6 91,28 91,72 50,94 9,72 9,28" fill="#0C447C"/><circle cx="50" cy="50" r="16" fill="#1D9E75"/></svg>
+        NEXORA
+      </div>
+      <nav aria-label="Rodapé">
+        <a href="#pains-h">O problema</a>
+        <a href="#como-funciona">Como funciona</a>
+        <a href="#modulos">Módulos</a>
+        <a href="#contato">Contato</a>
+      </nav>
+    </div>
+    <p class="footer-copy">NEXORA, por Transforma BI. © 2026. Plataforma de gestão de pessoas para empresas brasileiras.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+var heroStage = document.getElementById('heroStage');
+var heroPin = document.getElementById('heroPin');
+var video = document.getElementById('heroVideo');
+var poster = document.getElementById('heroPoster');
+var ring = document.getElementById('loadRing');
+var scrollCue = document.getElementById('scrollCue');
+var VIDEO_URL = 'assets/hero-scrub.mp4';
+
+var bands = Array.prototype.slice.call(document.querySelectorAll('.band')).map(function(el){
+  var r = el.getAttribute('data-range').split(',').map(Number);
+  return { el: el, a: r[0], b: r[1], op: -1, k: -1 };
+});
+
+/* ---- split headline text into word/char spans (seeded, done once) ---- */
+function rng(seed){ var s = seed >>> 0; return function(){ s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
+document.querySelectorAll('[data-split]').forEach(function(h, hi){
+  var text = h.textContent;
+  var words = text.split(' ');
+  var rand = rng(hi + 7);
+  var frag = document.createDocumentFragment();
+  var full = document.createElement('span'); full.className = 'sr-only'; full.textContent = text;
+  frag.appendChild(full);
+  var visible = document.createElement('span'); visible.setAttribute('aria-hidden', 'true');
+  var charIndex = 0, totalChars = text.replace(/\s/g,'').length;
+  words.forEach(function(w, wi){
+    var wordSpan = document.createElement('span'); wordSpan.className = 'split-word';
+    w.split('').forEach(function(c){
+      var cs = document.createElement('span'); cs.className = 'split-char'; cs.textContent = c;
+      cs.style.setProperty('--th', (charIndex / totalChars * 0.55 + rand() * 0.05).toFixed(3));
+      wordSpan.appendChild(cs); charIndex++;
+    });
+    visible.appendChild(wordSpan);
+    if (wi < words.length - 1) visible.appendChild(document.createTextNode(' '));
+  });
+  frag.appendChild(visible);
+  h.textContent = '';
+  h.appendChild(frag);
+});
+
+/* ---- smoothstep + band pacing ---- */
+function smoothstep(p,e0,e1){ var t = Math.min(1, Math.max(0, (p - e0) / (e1 - e0))); return t*t*(3-2*t); }
+function clamp(v,lo,hi){ return Math.min(hi, Math.max(lo, v)); }
+
+var lastLoad = performance.now();
+function heroProgress(){
+  var rect = heroPin.getBoundingClientRect();
+  var total = heroPin.offsetHeight - window.innerHeight;
+  if (total <= 0) return 1;
+  var scrolled = -rect.top;
+  return clamp(scrolled / total, 0, 1);
+}
+function heroOnScreen(){
+  var rect = heroPin.getBoundingClientRect();
+  return rect.bottom > 0 && rect.top < window.innerHeight;
+}
+
+function updateCaptions(p, loadK){
+  bands.forEach(function(b){
+    var f = Math.min(0.02, (b.b - b.a) / 3);
+    var isFirst = b.el.id === 'band1';
+    var opIn = isFirst ? 1 : smoothstep(p, b.a, b.a + f);
+    var opOut = 1 - smoothstep(p, b.b - f, b.b);
+    var op = Math.max(0, Math.min(opIn, opOut));
+    var ramp = Math.min(0.025, (b.b - b.a) * 0.35);
+    var kScroll = clamp((p - b.a) / (ramp || 0.001), 0, 1);
+    var k = isFirst ? Math.max(kScroll, loadK) : kScroll;
+    if (Math.abs(op - b.op) > 0.004){ b.el.style.opacity = op.toFixed(3); b.op = op; }
+    if (Math.abs(k - b.k) > 0.008){ b.el.style.setProperty('--k', k.toFixed(3)); b.k = k; }
+  });
+}
+
+/* ---- gated seeks ---- */
+var seekBusy = false, pendingTime = null;
+function requestSeek(t){
+  if (!video.duration || isNaN(video.duration)) return;
+  t = clamp(t, 0, video.duration);
+  if (seekBusy){ pendingTime = t; return; }
+  seekBusy = true;
+  try { video.currentTime = t; } catch(e){ seekBusy = false; }
+}
+video.addEventListener('seeked', function(){
+  seekBusy = false;
+  if (pendingTime !== null){ var t = pendingTime; pendingTime = null; requestSeek(t); }
+});
+video.addEventListener('error', function(){ seekBusy = false; pendingTime = null; });
+
+/* ---- rAF lerp loop that rests ---- */
+var target = 0, shown = 0, rafId = null, lastTick = 0;
+var loadStart = null, LOAD_RAMP_MS = 900;
+
+function tick(now){
+  var dt = Math.min(100, now - (lastTick || now));
+  lastTick = now;
+  var k = 0.18;
+  shown += (target - shown) * (1 - Math.pow(1 - k, dt / 16.667));
+  var converged = Math.abs(target - shown) < 0.0005;
+  if (converged) shown = target;
+
+  var loadK = 1;
+  if (loadStart !== null){
+    var e = clamp((now - loadStart) / LOAD_RAMP_MS, 0, 1);
+    loadK = e; if (e >= 1) loadStart = null;
+  }
+
+  if (video.duration && !isNaN(video.duration)) requestSeek(shown * video.duration);
+  updateCaptions(shown, loadK);
+
+  if (scrollCue) scrollCue.parentElement.classList.toggle('scrolled', shown > 0.02);
+
+  if (converged && loadStart === null){ rafId = null; lastTick = 0; return; }
+  rafId = requestAnimationFrame(tick);
+}
+function ensureLoop(){ if (rafId === null && heroOnScreen()) rafId = requestAnimationFrame(tick); }
+function onScroll(){ target = heroProgress(); ensureLoop(); }
+
+/* ---- load the clip as a Blob (small clip, plain fetch is fine) ---- */
+var started = false;
+function startFetch(){
+  if (started) return; started = true;
+  fetch(VIDEO_URL).then(function(res){ return res.blob(); }).then(function(blob){
+    video.src = URL.createObjectURL(blob);
+    video.load();
+    video.addEventListener('canplay', function once(){
+      video.removeEventListener('canplay', once);
+      heroStage.classList.add('video-ready');
+      loadStart = performance.now();
+      requestSeek(heroProgress() * video.duration);
+      ensureLoop();
+    });
+  }).catch(failVideo);
+}
+function failVideo(){
+  heroStage.classList.add('video-failed');
+  if (ring) ring.style.display = 'none';
+}
+video.addEventListener('error', failVideo);
+
+var mediaLoadTriggered = false;
+function triggerMediaLoad(){
+  if (mediaLoadTriggered) return; mediaLoadTriggered = true;
+  var posterImg = new Image();
+  posterImg.onload = startFetch; posterImg.onerror = startFetch;
+  posterImg.src = 'assets/hero-poster.jpg';
+  setTimeout(startFetch, 4000);
+}
+
+/* ---- static-hero gates (character-identical to the CSS media queries) ---- */
+var GATES = [
+  '(max-width: 720px)',
+  '(orientation: portrait) and (max-width: 1024px)',
+  '(orientation: portrait) and (pointer: coarse)',
+  '(orientation: landscape) and (pointer: coarse) and (max-height: 560px)',
+  '(prefers-reduced-motion: reduce)'
+];
+var scrubOn = false;
+function pinFinalStates(){
+  bands.forEach(function(b){ b.el.style.opacity = ''; b.el.style.removeProperty('--k'); });
+  document.querySelectorAll('.draw-line').forEach(function(l){ l.style.strokeDashoffset = 0; });
+}
+function enableScrub(){
+  if (scrubOn) return; scrubOn = true;
+  triggerMediaLoad();
+  addEventListener('scroll', onScroll, { passive: true });
+  bands.forEach(function(b){ b.op = -1; b.k = -1; });
+  updateCaptions(heroProgress(), 1);
+  onScroll();
+}
+function disableScrub(){
+  if (!scrubOn) return; scrubOn = false;
+  removeEventListener('scroll', onScroll);
+  if (rafId !== null){ cancelAnimationFrame(rafId); rafId = null; }
+}
+function applyHeroMode(){
+  var reduced = matchMedia(GATES[4]).matches;
+  if (GATES.some(function(q){ return matchMedia(q).matches; })){
+    disableScrub();
+    if (reduced) pinFinalStates();
+  } else {
+    enableScrub();
+  }
+}
+var MQLS = GATES.map(function(q){ return matchMedia(q); });
+MQLS.forEach(function(m){ m.addEventListener('change', applyHeroMode); });
+applyHeroMode();
+
+/* ================= entrances (below-fold) ================= */
+var io = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){ if (e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold: 0.2 });
+document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+/* ================= self-drawing dividers ================= */
+document.querySelectorAll('.draw-line').forEach(function(line){
+  var len = line.getTotalLength ? line.getTotalLength() : 300;
+  line.style.strokeDasharray = len;
+  line.style.strokeDashoffset = len;
+  var lineIo = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting){ line.style.transition = 'stroke-dashoffset 1.1s ' + 'cubic-bezier(.16,1,.3,1)'; line.style.strokeDashoffset = 0; lineIo.disconnect(); }
+    });
+  }, { threshold: 0.4 });
+  lineIo.observe(line);
+});
+
+/* ================= FAQ accordion ================= */
+document.querySelectorAll('.faq-item').forEach(function(item){
+  var q = item.querySelector('.faq-q'), a = item.querySelector('.faq-a');
+  q.addEventListener('click', function(){
+    var open = item.getAttribute('data-open') === 'true';
+    item.setAttribute('data-open', String(!open));
+    q.setAttribute('aria-expanded', String(!open));
+    a.style.maxHeight = open ? '0px' : (a.scrollHeight + 'px');
+  });
+});
+
+/* ================= interactive hold moment ================= */
+(function(){
+  var btn = document.getElementById('holdBtn');
+  var fill = document.getElementById('holdFill');
+  var field = document.getElementById('hexField');
+  var results = document.getElementById('holdResults');
+  var label = document.getElementById('holdBtnLabel');
+  var hint = document.getElementById('holdHint');
+  var p = 0, holding = false, done = false, raf = null;
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function setP(v){
+    p = clamp(v, 0, 1);
+    btn.style.setProperty('--p', p.toFixed(3));
+    field.style.setProperty('--p', p.toFixed(3));
+  }
+  function completeReveal(){
+    if (done) return; done = true;
+    results.hidden = false;
+    hint.textContent = 'Dados reunidos.';
+    results.querySelectorAll('strong').forEach(function(el){
+      var targetVal = Number(el.getAttribute('data-target'));
+      if (reduced){ el.textContent = targetVal; return; }
+      var start = performance.now();
+      function step(now){
+        var e = clamp((now - start) / 700, 0, 1);
+        el.textContent = Math.round(targetVal * smoothstep(e, 0, 1));
+        if (e < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }
+  function loop(){
+    if (holding) setP(p + 0.018); else setP(p - 0.03);
+    if (p >= 1){ setP(1); completeReveal(); raf = null; return; }
+    if (p <= 0 && !holding){ raf = null; return; }
+    raf = requestAnimationFrame(loop);
+  }
+  function start(){ if (done || reduced) return; holding = true; if (!raf) raf = requestAnimationFrame(loop); }
+  function stop(){ holding = false; if (!raf && p > 0) raf = requestAnimationFrame(loop); }
+
+  if (reduced){
+    label.textContent = 'Ver resultado';
+    btn.addEventListener('click', function(){ setP(1); completeReveal(); });
+  } else {
+    btn.addEventListener('pointerdown', function(e){ e.preventDefault(); start(); });
+    addEventListener('pointerup', stop);
+    btn.addEventListener('pointerleave', stop);
+    btn.addEventListener('keydown', function(e){ if (e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); start(); } });
+    btn.addEventListener('keyup', function(e){ if (e.key === ' ' || e.key === 'Enter') stop(); });
+  }
+})();
+
+/* ================= contact form ================= */
+(function(){
+  var form = document.getElementById('contactForm');
+  var success = document.getElementById('formSuccess');
+  var resetBtn = document.getElementById('formReset');
+
+  function fieldEl(name){ return form.querySelector('[data-field="' + name + '"]'); }
+  function validate(){
+    var ok = true;
+    ['nome','email','empresa'].forEach(function(name){
+      var wrap = fieldEl(name);
+      var input = wrap.querySelector('input');
+      var valid = input.value.trim().length > 0 && (name !== 'email' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value));
+      wrap.classList.toggle('invalid', !valid);
+      if (!valid) ok = false;
+    });
+    return ok;
+  }
+  ['nome','email','empresa'].forEach(function(name){
+    fieldEl(name).querySelector('input').addEventListener('input', function(){ fieldEl(name).classList.remove('invalid'); });
+  });
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    if (!validate()) return;
+    var nome = form.nome.value.trim(), email = form.email.value.trim(), empresa = form.empresa.value.trim(), msg = form.mensagem.value.trim();
+    var subject = encodeURIComponent('Pedido de demonstração: ' + empresa);
+    var body = encodeURIComponent(
+      'Nome: ' + nome + '\n' +
+      'E-mail: ' + email + '\n' +
+      'Empresa: ' + empresa + '\n\n' +
+      (msg || 'Sem mensagem adicional.')
+    );
+    window.location.href = 'mailto:transformabirj@gmail.com?subject=' + subject + '&body=' + body;
+    form.classList.add('hide');
+    success.classList.add('show');
+  });
+  resetBtn.addEventListener('click', function(){
+    form.reset(); form.classList.remove('hide'); success.classList.remove('show');
+  });
+})();
+
+})();
+</script>
+</body>
+</html>
